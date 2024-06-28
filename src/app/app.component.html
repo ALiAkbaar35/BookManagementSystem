@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="body-wrapper">
+      <div class="header">
+        <div class="title">Book Management System</div>
+        <div class="buttons">
+          <button class="addbook" (click)="showModal()">AddBook</button>
+          <button class="addbook" (click)="IssueShowModal()">IssueBook</button>
+        </div>
+      </div>
+      <div class="body">
+        <dialog id="AddDialog" [open]="AddDialogOpen" class="AddDialog">
+          <div class="d-header">
+            <div class="left">
+              <div class="titles">Add Book</div>
+            </div>
+            <div class="close">
+              <i class="fa-solid fa-xmark" (click)="closeModal()"></i>
+            </div>
+          </div>
+          <div class="d-body">
+            <form
+              action="#"
+              id="AddForm"
+              #addForm="ngForm"
+              (ngSubmit)="addBook()"
+            >
+              <div class="group">
+                <label for="bookName">Name</label>
+                <input
+                  type="text"
+                  class="name"
+                  id="bookName"
+                  placeholder="Enter book name"
+                  [(ngModel)]="newBook.name"
+                  name="name"
+                  required
+                />
+              </div>
+              <div class="group">
+                <label for="bookAuthor">Author</label>
+                <input
+                  type="text"
+                  class="author"
+                  id="bookAuthor"
+                  placeholder="Enter book author"
+                  [(ngModel)]="newBook.author"
+                  name="author"
+                  required
+                />
+              </div>
+              <div class="group">
+                <label for="bookCategory">Category</label>
+                <input
+                  type="text"
+                  class="category"
+                  id="bookCategory"
+                  placeholder="Enter book category"
+                  [(ngModel)]="newBook.category"
+                  name="category"
+                  required
+                />
+              </div>
+              <div class="group">
+                <label for="bookTags">Tags</label>
+                <input
+                  type="text"
+                  class="tags"
+                  id="bookTags"
+                  placeholder="Enter tags"
+                  [(ngModel)]="newBook.tags"
+                  name="tags"
+                />
+              </div>
+              <div class="group">
+                <label for="bookStatus">Status</label>
+                <select
+                  class="status"
+                  id="bookStatus"
+                  [(ngModel)]="newBook.status"
+                  name="status"
+                  required
+                >
+                  <option value="" disabled selected>Select Status</option>
+                  <option value="1">Available</option>
+                  <option value="0">Not Available</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary">Add Book</button>
+            </form>
+          </div>
+        </dialog>
+        <dialog id="AddDialog" [open]="IssueDialogOpen" class="AddDialog">
+          <div class="d-header">
+            <div class="left">
+              <div class="titles">Issue Book</div>
+            </div>
+            <div class="close">
+              <i class="fa-solid fa-xmark" (click)="closeModal()"></i>
+            </div>
+          </div>
+          <div class="d-body">
+            <form
+              action="#"
+              id="IssueForm"
+              #issueForm="ngForm"
+              (ngSubmit)="IssueBook()"
+            >
+              <div class="group">
+                <label for="issueBookID">Book</label>
+                <select
+                  class="issueBookID"
+                  id="issueBookID"
+                  [(ngModel)]="newIssue.bookId"
+                  name="bookId"
+                  required
+                >
+                  <option value="" disabled selected>Select Book</option>
+                  <ng-container *ngFor="let bo of Books">
+                    <option *ngIf="bo.status === '1'" [value]="bo.id">
+                      {{ bo.name }}
+                    </option>
+                  </ng-container>
+                </select>
+              </div>
+              <div class="group">
+                <label for="userName">User Name</label>
+                <input
+                  type="text"
+                  class="userName"
+                  id="userName"
+                  placeholder="Enter user name"
+                  [(ngModel)]="newIssue.userName"
+                  name="userName"
+                  required
+                />
+              </div>
+              <div class="group">
+                <label for="issueDate">Issue Date</label>
+                <input
+                  type="date"
+                  class="issueDate"
+                  id="issueDate"
+                  [(ngModel)]="newIssue.issueDate"
+                  name="issueDate"
+                  required
+                />
+              </div>
+              <button type="submit" class="btn btn-primary">Issue Book</button>
+            </form>
+          </div>
+        </dialog>
+        <div class="box">
+          <div class="Tabel-header">
+            <div class="tabel-title">Book List</div>
+            <select
+              class="statusFilter"
+              id="statusFilter"
+              [(ngModel)]="statusFilter"
+              (change)="filterBooks()"
+            >
+              <option value="2">All Books</option>
+              <option value="1">Available</option>
+              <option value="0">Unavailable</option>
+            </select>
+          </div>
+          <table class="addTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+                <th>Tags</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let book of Books; let i = index">
+              <tr>
+                <td>{{ book.id }}</td>
+                <td>{{ book.name }}</td>
+                <td>{{ book.author }}</td>
+                <td>{{ book.category }}</td>
+                <td>{{ book.tags }}</td>
+                <td>{{ book.status == 1 ? "Available" : "Not Available" }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="box">
+          <div class="Tabel-header">
+            <div class="tabel-title">Issued Books</div>
+          </div>
+          <table class="addTable">
+            <thead>
+              <tr>
+                <th>User Name</th>
+                <th>Book Title</th>
+                <th>Issue Date</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let issue of Issues; let i = index">
+              <tr>
+                <td>{{ issue.userName }}</td>
+                <td>{{ getName(issue.bookId) }}</td>
+                <td>{{ issue.issueDate }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
